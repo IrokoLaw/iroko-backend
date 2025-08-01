@@ -1,0 +1,2 @@
+export declare const DATABASE_UNIQUE_VIOLATION_CODE = "23505";
+export declare const DATABASE_FOREIGN_KEY_VIOLATION_CODE = "23503";

@@ -1,0 +1,24 @@
+# Load testing with Artillery.
+# Can also be good for seeding database with lots of dummy data.
+# https://github.com/Sairyss/backend-best-practices#load-testing
+# https://www.npmjs.com/package/artillery
+# https://www.npmjs.com/package/artillery-plugin-faker
+# Load testing with Artillery
+# Also useful for seeding databases with dummy data
+
+config:
+  target: http://localhost:3000/v1
+  phases:
+    - duration: 5 # Increased duration for more stable testing
+      arrivalRate: 150 # 150 requests per second
+  plugins:
+    fake-data: {}
+scenarios:
+  - flow:
+      - post:
+          url: '/users'
+          json:
+            firstName: '{{ $randFirstName() }}'
+            lastName: '{{ $randLastName() }}'
+            email: '{{ $randEmail() }}'
+            userId: '{{ $randUuid({ length: 10 }) }}'
