@@ -4,4 +4,4 @@
 .env.test.local
 .env.production.local
 .env.local
-.env.test
+.env.teststorage.json
