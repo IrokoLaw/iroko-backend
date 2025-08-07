@@ -1,16 +1,15 @@
-import { z } from 'zod';
-import { EvaluationNoteEnum } from '../domain/values-objects/evaluation-note-value-object';
-import { Injectable } from '@nestjs/common';
-import { EvaluationEntity } from '../domain/entities/evaluation/evaluation.entity';
-import { EvaluationResponseDto } from '../dtos/evaluation.response.dto';
-import { EvaluationDbEntity } from '../infrastructure/persistance/evaluation.entity.db';
-import { Mapper } from '@/libs/domain/mapper.interface';
+import { z } from "zod";
+import { EvaluationNoteEnum } from "../domain/values-objects/evaluation-note-value-object";
+import { Injectable } from "@nestjs/common";
+import { EvaluationEntity } from "../domain/entities/evaluation/evaluation.entity";
+import { EvaluationResponseDto } from "../dtos/evaluation.response.dto";
+import { EvaluationDbEntity } from "../infrastructure/persistance/evaluation.entity.db";
+import { Mapper } from "@/libs/domain/mapper.interface";
 
 export const evaluationSchema = z.object({
   id: z.string().uuid(),
   note: z.nativeEnum(EvaluationNoteEnum),
   comment: z.string(),
-  chatId: z.string().uuid(),
   createdAt: z.preprocess((val: any) => new Date(val), z.date()),
   updatedAt: z.preprocess((val: any) => new Date(val), z.date()),
 });
@@ -31,7 +30,6 @@ export class EvaluationMapper
       props: {
         note,
         comment,
-        chatId,
       },
     });
   }
@@ -40,7 +38,6 @@ export class EvaluationMapper
     const copy = domainEntity.getProps();
     const record: EvaluationModel = {
       id: copy.id,
-      chatId: copy.chatId,
       createdAt: copy.createdAt,
       updatedAt: copy.updatedAt,
       note: copy.note,

@@ -10,16 +10,16 @@ export declare const discussionSchema: z.ZodObject<{
     createdAt: z.ZodEffects<z.ZodDate, Date, unknown>;
     updatedAt: z.ZodEffects<z.ZodDate, Date, unknown>;
 }, "strip", z.ZodTypeAny, {
-    title?: string;
     id?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    title?: string;
     userId?: string;
 }, {
-    title?: string;
     id?: string;
     createdAt?: unknown;
     updatedAt?: unknown;
+    title?: string;
     userId?: string;
 }>;
 export type DiscussionModel = z.TypeOf<typeof discussionSchema>;

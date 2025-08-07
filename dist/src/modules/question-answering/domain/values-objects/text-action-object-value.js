@@ -9,6 +9,13 @@ var ActionEnum;
     ActionEnum["MODIFICATION"] = "MODIFICATION";
     ActionEnum["APPLICATION"] = "MISE EN APPLICATION";
     ActionEnum["RAS"] = "RAS";
+    ActionEnum["NAN"] = "";
+    ActionEnum["APPROBATION"] = "APPROBATION";
+    ActionEnum["ABROGATION"] = "ABROGATION";
+    ActionEnum["RATIFICATION"] = "RATIFICATION";
+    ActionEnum["MODIFIE"] = "MODIFIE ET COMPLETE";
+    ActionEnum["PUBLICATION"] = "PUBLICATION";
+    ActionEnum["EMPTY"] = "EMPTY";
 })(ActionEnum || (exports.ActionEnum = ActionEnum = {}));
 class SourceAction extends value_object_base_1.ValueObject {
     constructor(props) {
@@ -17,7 +24,7 @@ class SourceAction extends value_object_base_1.ValueObject {
     }
     validate(props) {
         if (!Object.values(ActionEnum).includes(props.value)) {
-            throw new exceptions_1.ArgumentInvalidException(' the action  is invalid');
+            throw new exceptions_1.ArgumentInvalidException(" the action  is invalid");
         }
     }
 }

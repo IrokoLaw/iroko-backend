@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routesV1 = void 0;
-const usersRoot = 'users';
-const chatRoot = 'chats';
-const sourceRoot = 'source';
-const discussionRoot = 'discussions';
-const evaluationRoot = 'evaluation';
-const v1 = 'v1';
+const usersRoot = "users";
+const chatRoot = "chats";
+const sourceRoot = "source";
+const discussionRoot = "discussions";
+const evaluationRoot = "evaluation";
+const v1 = "v1";
 exports.routesV1 = {
-    prefix: 'api',
+    prefix: "api",
     version: v1,
     user: {
         root: usersRoot,
@@ -21,6 +21,7 @@ exports.routesV1 = {
         sources: `/${chatRoot}/:chatId/sources`,
         evaluation: `/${chatRoot}/:chatId/evaluation`,
         update: `/${chatRoot}/:chatId`,
+        uploadFIle: `/${chatRoot}/upload/audio`,
     },
     source: {
         root: sourceRoot,

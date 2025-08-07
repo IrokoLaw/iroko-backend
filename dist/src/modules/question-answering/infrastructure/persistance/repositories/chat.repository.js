@@ -27,9 +27,6 @@ let ChatRepository = ChatRepository_1 = class ChatRepository extends reposiroty_
         this.chatRepository = chatRepository;
         this.tableName = chat_entity_db_1.ChatDbEntity.name;
     }
-    async associateEvaluation(chatId, evaluationId) {
-        await this.chatRepository.update(chatId, { evaluationId });
-    }
     async updateQuestionFields(chatId, query) {
         await this.chatRepository.update(chatId, query);
     }

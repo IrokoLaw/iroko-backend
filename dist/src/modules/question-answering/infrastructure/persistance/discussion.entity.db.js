@@ -18,23 +18,23 @@ let DiscussionDbEntity = class DiscussionDbEntity extends base_entity_db_1.BaseE
 };
 exports.DiscussionDbEntity = DiscussionDbEntity;
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: false }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: false }),
     __metadata("design:type", String)
 ], DiscussionDbEntity.prototype, "title", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => chat_entity_db_1.ChatDbEntity, (chat) => chat.discussion, { cascade: true }),
-    __metadata("design:type", Array)
-], DiscussionDbEntity.prototype, "chats", void 0);
-__decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_db_1.UserDbEntity, (user) => user.discussions),
-    (0, typeorm_1.JoinColumn)({ name: 'userId' }),
+    (0, typeorm_1.JoinColumn)({ name: "userId" }),
     __metadata("design:type", user_entity_db_1.UserDbEntity)
 ], DiscussionDbEntity.prototype, "user", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], DiscussionDbEntity.prototype, "userId", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => chat_entity_db_1.ChatDbEntity, (chat) => chat.discussion),
+    __metadata("design:type", Array)
+], DiscussionDbEntity.prototype, "chats", void 0);
 exports.DiscussionDbEntity = DiscussionDbEntity = __decorate([
-    (0, typeorm_1.Entity)('discussion')
+    (0, typeorm_1.Entity)("discussion")
 ], DiscussionDbEntity);
 //# sourceMappingURL=discussion.entity.db.js.map

@@ -20,8 +20,8 @@ export declare const cardSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id?: string;
     createdAt?: Date;
-    updatedAt?: Date;
     status?: CardStatusEnum;
+    updatedAt?: Date;
     brand?: BrandEnum;
     token?: string;
     numberLast4?: string;
@@ -32,8 +32,8 @@ export declare const cardSchema: z.ZodObject<{
 }, {
     id?: string;
     createdAt?: unknown;
-    updatedAt?: unknown;
     status?: CardStatusEnum;
+    updatedAt?: unknown;
     brand?: BrandEnum;
     token?: string;
     numberLast4?: string;

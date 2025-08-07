@@ -1,8 +1,8 @@
-import { AggregateID, BaseEntity } from '@/libs/domain/entity.base';
-import { ChatProps, CreateChatProps } from './chat.type';
-import { randomUUID } from 'crypto';
-import { ChatDocumentType } from '../../values-objects/chat-document-type-value-object';
-import { ChatLegalSubject } from '../../values-objects/chat-legal-subject-value-object';
+import { AggregateID, BaseEntity } from "@/libs/domain/entity.base";
+import { ChatProps, CreateChatProps } from "./chat.type";
+import { randomUUID } from "crypto";
+import { ChatDocumentType } from "../../values-objects/chat-document-type-value-object";
+import { ChatLegalSubject } from "../../values-objects/chat-legal-subject-value-object";
 
 export class ChatEntity extends BaseEntity<ChatProps> {
   protected readonly _id: AggregateID;
@@ -29,10 +29,6 @@ export class ChatEntity extends BaseEntity<ChatProps> {
     });
 
     return chat;
-  }
-
-  associateEvaluation(evaluationId: string) {
-    this.props.evaluationId = evaluationId;
   }
 
   public validate() {}

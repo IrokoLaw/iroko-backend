@@ -25,6 +25,7 @@ const exceptions_1 = require("../../../libs/exceptions");
 const create_new_evaluation_request_dto_1 = require("./evaluation/create-new-evaluation.request.dto");
 const evaluation_error_1 = require("../domain/entities/evaluation/evaluation.error");
 const create_new_discussion_request_dto_1 = require("./discussion/create-new-discussion.request.dto");
+const platform_express_1 = require("@nestjs/platform-express");
 let QuestionAnsweringCommandController = class QuestionAnsweringCommandController {
     constructor(service) {
         this.service = service;
@@ -62,17 +63,6 @@ let QuestionAnsweringCommandController = class QuestionAnsweringCommandControlle
             },
         });
     }
-    async updateChat(params, body) {
-        const result = await this.service.updateChat(body, params.chatId);
-        return (0, oxide_ts_1.match)(result, {
-            Ok: (id) => new id_response_dto_1.IdResponse(id),
-            Err: (error) => {
-                if (error instanceof exceptions_1.NotFoundException)
-                    throw new common_1.NotFoundException(error.message);
-                throw error;
-            },
-        });
-    }
     async updateEvaluation(params, body) {
         const result = await this.service.updateEvaluation(body, params.evaluationId);
         return (0, oxide_ts_1.match)(result, {
@@ -93,10 +83,20 @@ let QuestionAnsweringCommandController = class QuestionAnsweringCommandControlle
             },
         });
     }
+    async uploadAudio(file) {
+        try {
+            console.log("Uploading file to GCS:", file.originalname);
+            const publicUrl = await this.service.uploadAudioFile(file);
+            return { publicUrl };
+        }
+        catch (error) {
+            throw new Error(`Erreur lors du téléversement: ${error.message}`);
+        }
+    }
 };
 exports.QuestionAnsweringCommandController = QuestionAnsweringCommandController;
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Create a new chat' }),
+    (0, swagger_1.ApiOperation)({ summary: "Create a new chat" }),
     (0, swagger_1.ApiResponse)({
         status: common_1.HttpStatus.OK,
         type: id_response_dto_1.IdResponse,
@@ -112,7 +112,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], QuestionAnsweringCommandController.prototype, "create", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Add a chat to discussion id' }),
+    (0, swagger_1.ApiOperation)({ summary: "Add a chat to discussion id" }),
     (0, swagger_1.ApiResponse)({
         status: common_1.HttpStatus.OK,
         type: id_response_dto_1.IdResponse,
@@ -127,7 +127,7 @@ __decorate([
         type: api_error_response_1.ApiErrorResponse,
     }),
     (0, common_1.Post)(routes_1.routesV1.chat.addChatToDiscussion),
-    (0, swagger_1.ApiParam)({ name: 'discussionId', type: 'string' }),
+    (0, swagger_1.ApiParam)({ name: "discussionId", type: "string" }),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)()),
     __metadata("design:type", Function),
@@ -135,7 +135,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], QuestionAnsweringCommandController.prototype, "addChatToDiscussion", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'add a new evaluation to a chat' }),
+    (0, swagger_1.ApiOperation)({ summary: "add a new evaluation to a chat" }),
     (0, swagger_1.ApiResponse)({
         status: common_1.HttpStatus.OK,
         type: id_response_dto_1.IdResponse,
@@ -155,7 +155,7 @@ __decorate([
         type: api_error_response_1.ApiErrorResponse,
     }),
     (0, common_1.Post)(routes_1.routesV1.chat.evaluation),
-    (0, swagger_1.ApiParam)({ name: 'chatId', type: 'string' }),
+    (0, swagger_1.ApiParam)({ name: "chatId", type: "string" }),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -163,7 +163,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], QuestionAnsweringCommandController.prototype, "createEvaluation", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Update a chat' }),
+    (0, swagger_1.ApiOperation)({ summary: "Update a evaluation" }),
     (0, swagger_1.ApiResponse)({
         status: common_1.HttpStatus.OK,
         type: id_response_dto_1.IdResponse,
@@ -177,30 +177,7 @@ __decorate([
         description: exceptions_1.NotFoundException.message,
         type: api_error_response_1.ApiErrorResponse,
     }),
-    (0, swagger_1.ApiParam)({ name: 'chatId', type: 'string' }),
-    (0, common_1.Patch)(routes_1.routesV1.chat.update),
-    __param(0, (0, common_1.Param)()),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, create_new_chat_request_dto_1.UpdateChatRequestDto]),
-    __metadata("design:returntype", Promise)
-], QuestionAnsweringCommandController.prototype, "updateChat", null);
-__decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Update a evaluation' }),
-    (0, swagger_1.ApiResponse)({
-        status: common_1.HttpStatus.OK,
-        type: id_response_dto_1.IdResponse,
-    }),
-    (0, swagger_1.ApiResponse)({
-        status: common_1.HttpStatus.BAD_REQUEST,
-        type: api_error_response_1.ApiErrorResponse,
-    }),
-    (0, swagger_1.ApiResponse)({
-        status: common_1.HttpStatus.NOT_FOUND,
-        description: exceptions_1.NotFoundException.message,
-        type: api_error_response_1.ApiErrorResponse,
-    }),
-    (0, swagger_1.ApiParam)({ name: 'evaluationId', type: 'string' }),
+    (0, swagger_1.ApiParam)({ name: "evaluationId", type: "string" }),
     (0, common_1.Patch)(routes_1.routesV1.evaluation.update),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Body)()),
@@ -209,7 +186,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], QuestionAnsweringCommandController.prototype, "updateEvaluation", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Create a new discussion' }),
+    (0, swagger_1.ApiOperation)({ summary: "Create a new discussion" }),
     (0, swagger_1.ApiResponse)({
         status: common_1.HttpStatus.OK,
         type: id_response_dto_1.IdResponse,
@@ -224,6 +201,25 @@ __decorate([
     __metadata("design:paramtypes", [create_new_discussion_request_dto_1.CreateNewDiscussionRequestDto]),
     __metadata("design:returntype", Promise)
 ], QuestionAnsweringCommandController.prototype, "createDiscussion", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: "upload audio file" }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.OK,
+        type: id_response_dto_1.IdResponse,
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.BAD_REQUEST,
+        type: api_error_response_1.ApiErrorResponse,
+    }),
+    (0, common_1.Post)(routes_1.routesV1.chat.uploadFIle),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", {
+        limits: { fileSize: 5 * 1024 * 1024 },
+    })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], QuestionAnsweringCommandController.prototype, "uploadAudio", null);
 exports.QuestionAnsweringCommandController = QuestionAnsweringCommandController = __decorate([
     (0, common_1.Controller)(routes_1.routesV1.version),
     __metadata("design:paramtypes", [question_answering_service_1.QuestionAnsweringService])

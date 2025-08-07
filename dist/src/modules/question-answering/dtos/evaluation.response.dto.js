@@ -18,28 +18,27 @@ class EvaluationResponseDto extends response_base_1.ResponseBase {
         super(props);
         this.note = props.note;
         this.comment = props.comment;
-        this.chatId = props.chatId;
     }
 }
 exports.EvaluationResponseDto = EvaluationResponseDto;
 __decorate([
     (0, swagger_1.ApiProperty)({
         example: evaluation_note_value_object_1.EvaluationNoteEnum.USEFUL,
-        description: 'give a mark of a response',
+        description: "give a mark of a response",
     }),
     __metadata("design:type", String)
 ], EvaluationResponseDto.prototype, "note", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'the answer is good',
-        description: 'comment the mark',
+        example: "the answer is good",
+        description: "comment the mark",
     }),
     __metadata("design:type", String)
 ], EvaluationResponseDto.prototype, "comment", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: '123e4567-e89b-12d3-a456-426614174000',
-        description: 'the chat id',
+        example: "123e4567-e89b-12d3-a456-426614174000",
+        description: "the chat id",
     }),
     __metadata("design:type", String)
 ], EvaluationResponseDto.prototype, "chatId", void 0);

@@ -16,27 +16,31 @@ async function bootstrap() {
     app.useGlobalPipes(new common_1.ValidationPipe({ transform: true, whitelist: true }));
     const configService = app.get((config_1.ConfigService));
     app.enableShutdownHooks();
-    app.setGlobalPrefix(configService.getOrThrow('app.apiPrefix', { infer: true }), {
-        exclude: ['/'],
+    app.setGlobalPrefix(configService.getOrThrow("app.apiPrefix", { infer: true }), {
+        exclude: ["/"],
     });
     app.enableVersioning({
         type: common_1.VersioningType.URI,
     });
     app.enableCors({
-        origin: ['http://localhost:3002', 'http://localhost:3000'],
-        methods: 'GET,POST,PUT,DELETE, PATCH',
-        allowedHeaders: 'Content-Type, Accept',
+        origin: [
+            "http://localhost:3002",
+            "http://localhost:3000",
+            "http://localhost:3001",
+        ],
+        methods: "GET,POST,PUT,DELETE, PATCH",
+        allowedHeaders: "Content-Type, Accept",
         credentials: true,
     });
     app.use((0, helmet_1.default)());
     const options = new swagger_1.DocumentBuilder()
-        .setTitle(configService.getOrThrow('app.name', { infer: true }))
-        .setDescription(configService.getOrThrow('app.description', { infer: true }))
-        .setVersion(configService.getOrThrow('app.version', { infer: true }))
+        .setTitle(configService.getOrThrow("app.name", { infer: true }))
+        .setDescription(configService.getOrThrow("app.description", { infer: true }))
+        .setVersion(configService.getOrThrow("app.version", { infer: true }))
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, options);
-    swagger_1.SwaggerModule.setup('docs', app, document);
-    await app.listen(configService.getOrThrow('app.port', { infer: true }));
+    swagger_1.SwaggerModule.setup("docs", app, document);
+    await app.listen(configService.getOrThrow("app.port", { infer: true }));
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

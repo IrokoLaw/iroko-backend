@@ -13,28 +13,22 @@ exports.EvaluationDbEntity = void 0;
 const base_entity_db_1 = require("../../../../libs/db/base-entity-db");
 const evaluation_note_value_object_1 = require("../../domain/values-objects/evaluation-note-value-object");
 const typeorm_1 = require("typeorm");
-const chat_entity_db_1 = require("./chat.entity.db");
 let EvaluationDbEntity = class EvaluationDbEntity extends base_entity_db_1.BaseEntityDb {
 };
 exports.EvaluationDbEntity = EvaluationDbEntity;
 __decorate([
-    (0, typeorm_1.Column)({ type: 'enum', enum: evaluation_note_value_object_1.EvaluationNoteEnum, nullable: false }),
+    (0, typeorm_1.Column)({ type: "enum", enum: evaluation_note_value_object_1.EvaluationNoteEnum, nullable: false }),
     __metadata("design:type", String)
 ], EvaluationDbEntity.prototype, "note", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'text', nullable: true, default: '' }),
+    (0, typeorm_1.Column)({ type: "text", nullable: true, default: "" }),
     __metadata("design:type", String)
 ], EvaluationDbEntity.prototype, "comment", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'uuid', nullable: false }),
+    (0, typeorm_1.Column)({ type: "uuid", nullable: false }),
     __metadata("design:type", String)
 ], EvaluationDbEntity.prototype, "chatId", void 0);
-__decorate([
-    (0, typeorm_1.OneToOne)(() => chat_entity_db_1.ChatDbEntity, (chat) => chat.evaluation),
-    (0, typeorm_1.JoinColumn)({ name: 'chatId' }),
-    __metadata("design:type", chat_entity_db_1.ChatDbEntity)
-], EvaluationDbEntity.prototype, "chat", void 0);
 exports.EvaluationDbEntity = EvaluationDbEntity = __decorate([
-    (0, typeorm_1.Entity)('evaluation')
+    (0, typeorm_1.Entity)("evaluation")
 ], EvaluationDbEntity);
 //# sourceMappingURL=evaluation.entity.db.js.map

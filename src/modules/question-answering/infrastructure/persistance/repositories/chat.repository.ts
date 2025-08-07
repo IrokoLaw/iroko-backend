@@ -1,14 +1,14 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
-import { RepositoryBase } from '@/libs/db/reposiroty.base';
+import { RepositoryBase } from "@/libs/db/reposiroty.base";
 
-import { ChatEntity } from '@/modules/question-answering/domain/entities/chat/chat.entity';
-import { ChatDbEntity } from '../chat.entity.db';
-import { ChatRepositoryPort } from '../../../domain/ports/chat.repository.port';
-import { ChatMapper } from '@/modules/question-answering/mapper/chat.mapper';
-import { Injectable, Logger } from '@nestjs/common';
-import { ChatProps } from '@/modules/question-answering/domain/entities/chat/chat.type';
+import { ChatEntity } from "@/modules/question-answering/domain/entities/chat/chat.entity";
+import { ChatDbEntity } from "../chat.entity.db";
+import { ChatRepositoryPort } from "../../../domain/ports/chat.repository.port";
+import { ChatMapper } from "@/modules/question-answering/mapper/chat.mapper";
+import { Injectable, Logger } from "@nestjs/common";
+import { ChatProps } from "@/modules/question-answering/domain/entities/chat/chat.type";
 
 @Injectable()
 export class ChatRepository
@@ -20,21 +20,14 @@ export class ChatRepository
   constructor(
     readonly mapper: ChatMapper,
     @InjectRepository(ChatDbEntity)
-    readonly chatRepository: Repository<ChatDbEntity>,
+    readonly chatRepository: Repository<ChatDbEntity>
   ) {
     super(chatRepository, mapper, new Logger(ChatRepository.name));
   }
 
-  async associateEvaluation(
-    chatId: string,
-    evaluationId: string,
-  ): Promise<void> {
-    await this.chatRepository.update(chatId, { evaluationId });
-  }
-
   async updateQuestionFields(
     chatId: string,
-    query: Pick<ChatProps, 'question' | 'documentTypes' | 'legalSubjects'>,
+    query: Pick<ChatProps, "question" | "documentTypes" | "legalSubjects">
   ): Promise<void> {
     await this.chatRepository.update(chatId, query);
   }

@@ -1,9 +1,9 @@
-import { SourceProps } from '../../domain/entities/source/source.type';
-import { LLMQuestionAnsweringSource } from './llm-question-answering.type';
+import { SourceProps } from "../../domain/entities/source/source.type";
+import { LLMQuestionAnsweringSource } from "./llm-question-answering.type";
 
 export function LLMQuestionAnsweringSourceToDomainSourceMapper(
-  source: LLMQuestionAnsweringSource,
-): Omit<SourceProps, 'chatId'> {
+  source: LLMQuestionAnsweringSource
+): Omit<SourceProps, "chatId"> {
   return {
     titleNumber: source.num_title,
     chapter: source.chapter,
@@ -20,5 +20,8 @@ export function LLMQuestionAnsweringSourceToDomainSourceMapper(
     title: source.title,
     section: source.section,
     articleNumber: source.article_num,
+    reference: source.id,
+    page:
+      source.page && !isNaN(Number(source.page)) ? parseInt(source.page) : 1,
   };
 }

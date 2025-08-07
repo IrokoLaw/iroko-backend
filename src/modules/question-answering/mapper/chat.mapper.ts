@@ -1,11 +1,11 @@
-import { z } from 'zod';
-import { DocumentTypeEnum } from '../domain/values-objects/chat-document-type-value-object';
-import { LegalSubjectEnum } from '../domain/values-objects/chat-legal-subject-value-object';
-import { Injectable } from '@nestjs/common';
-import { Mapper } from '@/libs/domain/mapper.interface';
-import { ChatEntity } from '../domain/entities/chat/chat.entity';
-import { ChatDbEntity } from '../infrastructure/persistance/chat.entity.db';
-import { ChatResponseDto } from '../dtos/chat.response.dto';
+import { z } from "zod";
+import { DocumentTypeEnum } from "../domain/values-objects/chat-document-type-value-object";
+import { LegalSubjectEnum } from "../domain/values-objects/chat-legal-subject-value-object";
+import { Injectable } from "@nestjs/common";
+import { Mapper } from "@/libs/domain/mapper.interface";
+import { ChatEntity } from "../domain/entities/chat/chat.entity";
+import { ChatDbEntity } from "../infrastructure/persistance/chat.entity.db";
+import { ChatResponseDto } from "../dtos/chat.response.dto";
 
 export const chatSchema = z.object({
   id: z.string().uuid(),
@@ -13,10 +13,9 @@ export const chatSchema = z.object({
   updatedAt: z.preprocess((val: any) => new Date(val), z.date()),
   question: z.string().min(1),
   answer: z.string().min(1),
+  discussionId: z.string().uuid(),
   documentTypes: z.array(z.nativeEnum(DocumentTypeEnum)).optional(),
   legalSubjects: z.array(z.nativeEnum(LegalSubjectEnum)).optional(),
-  discussionId: z.string().uuid(),
-  evaluationId: z.string().uuid().optional(),
 });
 
 export type ChatModel = z.TypeOf<typeof chatSchema>;
@@ -32,10 +31,9 @@ export class ChatMapper
       answer,
       documentTypes,
       legalSubjects,
-      discussionId,
-      evaluationId,
       createdAt,
       updatedAt,
+      discussionId,
     } = dbEntity;
     return new ChatEntity({
       id,
@@ -47,7 +45,6 @@ export class ChatMapper
         documentTypes,
         legalSubjects,
         discussionId,
-        evaluationId,
       },
     });
   }
@@ -60,10 +57,9 @@ export class ChatMapper
       answer: copy.answer,
       documentTypes: copy.documentTypes,
       legalSubjects: copy.legalSubjects,
-      discussionId: copy.discussionId,
-      evaluationId: copy.evaluationId,
       createdAt: copy.createdAt,
       updatedAt: copy.updatedAt,
+      discussionId: copy.discussionId,
     };
 
     chatSchema.parse(record);

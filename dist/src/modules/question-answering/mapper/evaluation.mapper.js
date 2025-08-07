@@ -17,7 +17,6 @@ exports.evaluationSchema = zod_1.z.object({
     id: zod_1.z.string().uuid(),
     note: zod_1.z.nativeEnum(evaluation_note_value_object_1.EvaluationNoteEnum),
     comment: zod_1.z.string(),
-    chatId: zod_1.z.string().uuid(),
     createdAt: zod_1.z.preprocess((val) => new Date(val), zod_1.z.date()),
     updatedAt: zod_1.z.preprocess((val) => new Date(val), zod_1.z.date()),
 });
@@ -31,7 +30,6 @@ let EvaluationMapper = class EvaluationMapper {
             props: {
                 note,
                 comment,
-                chatId,
             },
         });
     }
@@ -39,7 +37,6 @@ let EvaluationMapper = class EvaluationMapper {
         const copy = domainEntity.getProps();
         const record = {
             id: copy.id,
-            chatId: copy.chatId,
             createdAt: copy.createdAt,
             updatedAt: copy.updatedAt,
             note: copy.note,

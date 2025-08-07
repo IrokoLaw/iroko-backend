@@ -16,20 +16,20 @@ export declare const accountSchema: z.ZodObject<{
     capacity: z.ZodNumber;
     status: z.ZodNativeEnum<typeof AccountStatusEnum>;
 }, "strip", z.ZodTypeAny, {
-    type?: AccountTypeEnum;
     id?: string;
     createdAt?: Date;
-    updatedAt?: Date;
     status?: AccountStatusEnum;
+    type?: AccountTypeEnum;
+    updatedAt?: Date;
     invoicingType?: InvoicingTypeEnum;
     expirePaymentDate?: Date;
     capacity?: number;
 }, {
-    type?: AccountTypeEnum;
     id?: string;
     createdAt?: unknown;
-    updatedAt?: unknown;
     status?: AccountStatusEnum;
+    type?: AccountTypeEnum;
+    updatedAt?: unknown;
     invoicingType?: InvoicingTypeEnum;
     expirePaymentDate?: unknown;
     capacity?: number;

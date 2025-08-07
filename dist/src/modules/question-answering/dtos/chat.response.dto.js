@@ -22,28 +22,34 @@ class ChatResponseDto extends response_base_1.ResponseBase {
         this.documentTypes = props.documentTypes;
         this.legalSubjects = props.legalSubjects;
         this.discussionId = props.discussionId;
-        this.evaluationId = props.evaluationId;
     }
 }
 exports.ChatResponseDto = ChatResponseDto;
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'Quelle est la loi sur le travail ?',
-        description: 'La question posée dans le chat',
+        example: "Quelle est la loi sur le travail ?",
+        description: "La question posée dans le chat",
     }),
     __metadata("design:type", String)
 ], ChatResponseDto.prototype, "question", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'La loi sur le travail stipule que...',
-        description: 'La réponse générée pour la question posée',
+        example: "La loi sur le travail stipule que...",
+        description: "La réponse générée pour la question posée",
     }),
     __metadata("design:type", String)
 ], ChatResponseDto.prototype, "answer", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'LEGAL_DOCUMENT',
-        description: 'Type du document associé à la réponse',
+        example: "123e4567-e89b-12d3-a456-426614174000",
+        description: "Identifiant unique de la discussion associée",
+    }),
+    __metadata("design:type", String)
+], ChatResponseDto.prototype, "discussionId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "LEGAL_DOCUMENT",
+        description: "Type du document associé à la réponse",
         enum: chat_document_type_value_object_1.DocumentTypeEnum,
         required: false,
     }),
@@ -51,26 +57,11 @@ __decorate([
 ], ChatResponseDto.prototype, "documentTypes", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'LABOR_LAW',
-        description: 'Domaine du droit auquel se rapporte la réponse',
+        example: "LABOR_LAW",
+        description: "Domaine du droit auquel se rapporte la réponse",
         enum: chat_legal_subject_value_object_1.LegalSubjectEnum,
         required: false,
     }),
     __metadata("design:type", Array)
 ], ChatResponseDto.prototype, "legalSubjects", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        example: '550e8400-e29b-41d4-a716-446655440000',
-        description: 'Identifiant de la discussion à laquelle appartient ce chat',
-    }),
-    __metadata("design:type", String)
-], ChatResponseDto.prototype, "discussionId", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        example: 'c9d6f8a9-4e2c-4f21-bb62-123456789abc',
-        description: "Identifiant de l'évaluation associée au chat, si applicable",
-        required: false,
-    }),
-    __metadata("design:type", String)
-], ChatResponseDto.prototype, "evaluationId", void 0);
 //# sourceMappingURL=chat.response.dto.js.map

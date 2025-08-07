@@ -1,11 +1,18 @@
-import { ValueObject } from '@/libs/domain/value-object.base';
-import { ArgumentInvalidException } from '@/libs/exceptions';
+import { ValueObject } from "@/libs/domain/value-object.base";
+import { ArgumentInvalidException } from "@/libs/exceptions";
 
 export enum ActionEnum {
-  'PRECISION' = 'PRECISION',
-  'MODIFICATION' = 'MODIFICATION',
-  'APPLICATION' = 'MISE EN APPLICATION',
-  'RAS' = 'RAS',
+  "PRECISION" = "PRECISION",
+  "MODIFICATION" = "MODIFICATION",
+  "APPLICATION" = "MISE EN APPLICATION",
+  "RAS" = "RAS",
+  "NAN" = "",
+  "APPROBATION" = "APPROBATION",
+  "ABROGATION" = "ABROGATION",
+  "RATIFICATION" = "RATIFICATION",
+  "MODIFIE" = "MODIFIE ET COMPLETE",
+  "PUBLICATION" = "PUBLICATION",
+  "EMPTY" = "EMPTY",
 }
 
 export class SourceAction extends ValueObject<ActionEnum> {
@@ -16,7 +23,7 @@ export class SourceAction extends ValueObject<ActionEnum> {
 
   protected validate(props: { value: ActionEnum }): void {
     if (!Object.values(ActionEnum).includes(props.value)) {
-      throw new ArgumentInvalidException(' the action  is invalid');
+      throw new ArgumentInvalidException(" the action  is invalid");
     }
   }
 }

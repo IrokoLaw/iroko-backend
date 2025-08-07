@@ -12,6 +12,7 @@ export declare const routesV1: {
         sources: string;
         evaluation: string;
         update: string;
+        uploadFIle: string;
     };
     source: {
         root: string;

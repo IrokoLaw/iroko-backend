@@ -18,6 +18,8 @@ function LLMQuestionAnsweringSourceToDomainSourceMapper(source) {
         title: source.title,
         section: source.section,
         articleNumber: source.article_num,
+        reference: source.id,
+        page: source.page && !isNaN(Number(source.page)) ? parseInt(source.page) : 1,
     };
 }
 //# sourceMappingURL=mapper.js.map

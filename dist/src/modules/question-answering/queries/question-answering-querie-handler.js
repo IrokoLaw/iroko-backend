@@ -19,8 +19,7 @@ const source_entity_1 = require("../domain/entities/source/source.entity");
 const oxide_ts_1 = require("oxide.ts");
 const query_base_1 = require("../../../libs/domain/query.base");
 const repository_port_1 = require("../../../libs/domain/repository.port");
-const s3_service_1 = require("../../../file-storage/s3.service");
-const exceptions_1 = require("../../../libs/exceptions");
+const gcs_service_1 = require("../../../gcs/gcs.service");
 class FindDiscussionChatsQuery extends query_base_1.PaginatedQueryBase {
     constructor(props) {
         super(props);
@@ -49,24 +48,24 @@ class FindChatEvaluationQuery {
 }
 exports.FindChatEvaluationQuery = FindChatEvaluationQuery;
 let QuestionAnsweringHandler = class QuestionAnsweringHandler {
-    constructor(discussionRepository, chatRepository, sourceRepository, evaluationRepository, s3Service) {
+    constructor(discussionRepository, chatRepository, sourceRepository, evaluationRepository, fileStorage) {
         this.discussionRepository = discussionRepository;
         this.chatRepository = chatRepository;
         this.sourceRepository = sourceRepository;
         this.evaluationRepository = evaluationRepository;
-        this.s3Service = s3Service;
+        this.fileStorage = fileStorage;
     }
     async findDiscussionChats(query) {
         const records = await this.chatRepository.findAllPaginated({
             page: query.page,
             limit: query.limit,
             orderBy: {
-                field: 'createdAt',
-                param: 'ASC',
+                field: "createdAt",
+                param: "ASC",
             },
             filterBy: [
                 {
-                    field: 'discussionId',
+                    field: "discussionId",
                     value: query.discussionId,
                 },
             ],
@@ -85,7 +84,7 @@ let QuestionAnsweringHandler = class QuestionAnsweringHandler {
             orderBy: query.orderBy,
             filterBy: [
                 {
-                    field: 'chatId',
+                    field: "chatId",
                     value: query.chatId,
                 },
             ],
@@ -97,7 +96,7 @@ let QuestionAnsweringHandler = class QuestionAnsweringHandler {
             status: source.getProps().status,
             chapterNumber: source.getProps().chapterNumber,
             articleNumber: source.getProps().articleNumber,
-            pathDoc: await this.s3Service.getSignedUrl(source.getProps().pathDoc),
+            pathDoc: await this.fileStorage.getSignedUrl(source.getProps().pathDoc),
             action: source.getProps().action,
             book: source.getProps().book,
             title: source.getProps().title,
@@ -107,6 +106,8 @@ let QuestionAnsweringHandler = class QuestionAnsweringHandler {
             chapter: source.getProps().chapter,
             section: source.getProps().section,
             pathMetadata: source.getProps().pathMetadata,
+            reference: source.getProps().reference,
+            page: source.getProps().page,
         })));
         return (0, oxide_ts_1.Ok)(new repository_port_1.Paginated({
             data: sourceData,
@@ -120,12 +121,12 @@ let QuestionAnsweringHandler = class QuestionAnsweringHandler {
             page: query.page,
             limit: query.limit,
             orderBy: {
-                field: 'createdAt',
-                param: 'DESC',
+                field: "createdAt",
+                param: "DESC",
             },
             filterBy: [
                 {
-                    field: 'userId',
+                    field: "userId",
                     value: query.userId,
                 },
             ],
@@ -137,16 +138,6 @@ let QuestionAnsweringHandler = class QuestionAnsweringHandler {
             page: query.page,
         }));
     }
-    async findChatEvaluation(query) {
-        const chat = await this.chatRepository.findOneById(query.chatId);
-        if (chat.isNone())
-            return (0, oxide_ts_1.Err)(new exceptions_1.NotFoundException());
-        const evaluation = await this.evaluationRepository.findOneById(chat.unwrap().getProps().evaluationId);
-        if (evaluation.isNone())
-            return (0, oxide_ts_1.Err)(new exceptions_1.NotFoundException());
-        console.log('data :', evaluation);
-        return (0, oxide_ts_1.Ok)(evaluation.unwrap());
-    }
 };
 exports.QuestionAnsweringHandler = QuestionAnsweringHandler;
 exports.QuestionAnsweringHandler = QuestionAnsweringHandler = __decorate([
@@ -155,6 +146,6 @@ exports.QuestionAnsweringHandler = QuestionAnsweringHandler = __decorate([
     __param(1, (0, common_1.Inject)(question_answering_di_token_1.CHAT_REPOSITORY)),
     __param(2, (0, common_1.Inject)(question_answering_di_token_1.SOURCE_REPOSITORY)),
     __param(3, (0, common_1.Inject)(question_answering_di_token_1.EVALUATION_REPOSITORY)),
-    __metadata("design:paramtypes", [Object, Object, Object, Object, s3_service_1.S3Service])
+    __metadata("design:paramtypes", [Object, Object, Object, Object, gcs_service_1.GCSService])
 ], QuestionAnsweringHandler);
 //# sourceMappingURL=question-answering-querie-handler.js.map

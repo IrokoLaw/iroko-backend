@@ -35,11 +35,9 @@ let EvaluationService = class EvaluationService {
             const evaluation = evaluation_entity_1.EvaluationEntity.create({
                 note: data.note,
                 comment: data.comment,
-                chatId: chatEntity.id,
             });
             await this.evaluationRepo.transaction(async () => {
                 await this.evaluationRepo.insert(evaluation);
-                await this.chatRepo.associateEvaluation(chatEntity.id, evaluation.id);
             });
             return (0, oxide_ts_1.Ok)(evaluation.id);
         }

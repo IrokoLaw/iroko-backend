@@ -9,6 +9,9 @@ var BlocEnum;
     BlocEnum["LEGISLATIVE"] = "LEGISLATIF";
     BlocEnum["COMMUNAUTAIRE"] = "COMMUNAUTAIRE";
     BlocEnum["ACTES"] = "ACTES";
+    BlocEnum[BlocEnum["RAS"] = undefined] = "RAS";
+    BlocEnum["EMPTY"] = "EMPTY";
+    BlocEnum["VIDE"] = "";
 })(BlocEnum || (exports.BlocEnum = BlocEnum = {}));
 class SourceBloc extends value_object_base_1.ValueObject {
     constructor(props) {
@@ -17,7 +20,7 @@ class SourceBloc extends value_object_base_1.ValueObject {
     }
     validate(props) {
         if (!Object.values(BlocEnum).includes(props.value)) {
-            throw new exceptions_1.ArgumentInvalidException('bloc is invalid');
+            throw new exceptions_1.ArgumentInvalidException("bloc is invalid");
         }
     }
 }

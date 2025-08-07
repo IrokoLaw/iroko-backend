@@ -21,24 +21,24 @@ export declare const transactionSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id?: string;
     createdAt?: Date;
-    updatedAt?: Date;
+    status?: TransactionStatusEnum;
     date?: Date;
+    updatedAt?: Date;
     amount?: number;
     currency?: TransactionCurrencyEnum;
     country?: string;
-    status?: TransactionStatusEnum;
     cardId?: string;
     operationId?: string;
     method?: TransactionMethodEnum;
 }, {
     id?: string;
     createdAt?: unknown;
-    updatedAt?: unknown;
+    status?: TransactionStatusEnum;
     date?: unknown;
+    updatedAt?: unknown;
     amount?: number;
     currency?: TransactionCurrencyEnum;
     country?: string;
-    status?: TransactionStatusEnum;
     cardId?: string;
     operationId?: string;
     method?: TransactionMethodEnum;

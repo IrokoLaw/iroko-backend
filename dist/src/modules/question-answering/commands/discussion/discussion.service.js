@@ -22,9 +22,9 @@ const oxide_ts_1 = require("oxide.ts");
 const create_new_chat_request_dto_1 = require("../chat/create-new-chat.request.dto");
 const question_answering_di_token_1 = require("../../question-answering.di-token");
 const config_1 = require("@nestjs/config");
-const chat_legal_subject_value_object_1 = require("../../domain/values-objects/chat-legal-subject-value-object");
 const s3_service_1 = require("../../../../file-storage/s3.service");
 const answer_formatting_service_1 = require("../answer-formatting.service");
+const mapper_1 = require("../../infrastructure/llm-question-answering/mapper");
 let DiscussionService = class DiscussionService {
     constructor(chatRepo, discussionRepo, sourceRepo, llmQuestionAnswering, s3Service, configService, answerFormattingService) {
         this.chatRepo = chatRepo;
@@ -39,29 +39,26 @@ let DiscussionService = class DiscussionService {
         try {
             const discussion = discussion_entity_1.DiscussionEntity.create({
                 title: data.question,
-                userId: this.configService.get('app.testUserId', { infer: true }),
+                userId: this.configService.get("app.testUserId", { infer: true }),
             });
-            const llmResponse = await this.llmQuestionAnswering.getAnswerWithSources({
-                question: data.question,
-                legalSubjects: data.legalSubjects ?? [chat_legal_subject_value_object_1.LegalSubjectEnum.DEFAULT_LAW],
-                documentTypes: data.documentTypes ?? [],
-            });
-            const pathDocs = await Promise.all(llmResponse.documents.map(async (source) => {
-                const signedUrl = await this.s3Service.getSignedUrl(source.pathDoc);
-                return signedUrl;
+            const responseDocument = data.documents.map(mapper_1.LLMQuestionAnsweringSourceToDomainSourceMapper);
+            const pathDocs = await Promise.all(responseDocument.map(async (source) => {
+                const id = source.reference;
+                return { path_doc: id };
             }));
+            const answer = typeof data.answer === "string" ? data.answer : "";
             await this.discussionRepo.transaction(async () => {
                 await this.discussionRepo.insert(discussion);
                 const chat = chat_entity_1.ChatEntity.create({
                     question: data.question,
-                    answer: this.answerFormattingService.parseAnswerCitation(llmResponse.answer, pathDocs),
+                    answer: this.answerFormattingService.parseAnswerCitation(answer, pathDocs),
                     legalSubjects: data.legalSubjects,
                     documentTypes: data.documentTypes,
                     discussionId: discussion.id,
                 });
                 await this.chatRepo.insert(chat);
-                if (llmResponse.documents.length > 0) {
-                    const sources = llmResponse.documents.map((source) => source_entity_1.SourceEntity.create({
+                if (responseDocument.length > 0) {
+                    const sources = responseDocument.map((source) => source_entity_1.SourceEntity.create({
                         chatId: chat.id,
                         legalTextName: source.legalTextName,
                         bloc: source.bloc,
@@ -78,6 +75,8 @@ let DiscussionService = class DiscussionService {
                         chapter: source.chapter,
                         section: source.section,
                         pathMetadata: source.pathMetadata,
+                        reference: source.reference,
+                        page: source.page,
                     }));
                     await this.sourceRepo.insert(sources);
                 }
@@ -91,7 +90,7 @@ let DiscussionService = class DiscussionService {
     async createDiscussion(data) {
         const discussion = discussion_entity_1.DiscussionEntity.create({
             title: data.title,
-            userId: this.configService.get('app.testUserId', { infer: true }),
+            userId: this.configService.get("app.testUserId", { infer: true }),
         });
         await this.discussionRepo.insert(discussion);
         return (0, oxide_ts_1.Ok)(discussion.id);

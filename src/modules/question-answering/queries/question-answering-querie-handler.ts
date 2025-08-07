@@ -1,32 +1,33 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from "@nestjs/common";
 import {
   CHAT_REPOSITORY,
   DISCUSSION_REPOSITORY,
   EVALUATION_REPOSITORY,
   SOURCE_REPOSITORY,
-} from '../question-answering.di-token';
-import { DiscussionRepositoryPort } from '../domain/ports/discussion.repository.port';
-import { ChatRepositoryPort } from '../domain/ports/chat.repository.port';
-import { SourceRepositoryPort } from '../domain/ports/source.repository.port';
-import { ChatEntity } from '../domain/entities/chat/chat.entity';
-import { SourceEntity } from '../domain/entities/source/source.entity';
-import { DiscussionEntity } from '../domain/entities/discussion/discussion.entity';
+} from "../question-answering.di-token";
+import { DiscussionRepositoryPort } from "../domain/ports/discussion.repository.port";
+import { ChatRepositoryPort } from "../domain/ports/chat.repository.port";
+import { SourceRepositoryPort } from "../domain/ports/source.repository.port";
+import { ChatEntity } from "../domain/entities/chat/chat.entity";
+import { SourceEntity } from "../domain/entities/source/source.entity";
+import { DiscussionEntity } from "../domain/entities/discussion/discussion.entity";
 
-import { DiscussionEntityProps } from '../domain/entities/discussion/discussion.type';
+import { DiscussionEntityProps } from "../domain/entities/discussion/discussion.type";
 
-import { Err, Ok, Result } from 'oxide.ts';
-import { PaginatedParams, PaginatedQueryBase } from '@/libs/domain/query.base';
-import { Paginated } from '@/libs/domain/repository.port';
-import { ChatEntityProps } from '../domain/entities/chat/chat.type';
-import { SourceEntityProps } from '../domain/entities/source/source.type';
-import { S3Service } from '@/file-storage/s3.service';
-import { EvaluationRepositoryPort } from '../domain/ports/evaluation.repository.port';
-import { EvaluationEntity } from '../domain/entities/evaluation/evaluation.entity';
-import { NotFoundException } from '@/libs/exceptions';
+import { Err, Ok, Result } from "oxide.ts";
+import { PaginatedParams, PaginatedQueryBase } from "@/libs/domain/query.base";
+import { Paginated } from "@/libs/domain/repository.port";
+import { ChatEntityProps } from "../domain/entities/chat/chat.type";
+import { SourceEntityProps } from "../domain/entities/source/source.type";
+import { S3Service } from "@/file-storage/s3.service";
+import { EvaluationRepositoryPort } from "../domain/ports/evaluation.repository.port";
+import { EvaluationEntity } from "../domain/entities/evaluation/evaluation.entity";
+import { NotFoundException } from "@/libs/exceptions";
+import { GCSService } from "@/gcs/gcs.service";
 export class FindDiscussionChatsQuery extends PaginatedQueryBase<ChatEntityProps> {
   readonly discussionId: string;
   constructor(
-    props: PaginatedParams<FindDiscussionChatsQuery, ChatEntityProps>,
+    props: PaginatedParams<FindDiscussionChatsQuery, ChatEntityProps>
   ) {
     super(props);
     this.discussionId = props.discussionId;
@@ -44,7 +45,7 @@ export class FindChatSourcesQuery extends PaginatedQueryBase<SourceEntityProps> 
 export class FindUserDiscussionsQuery extends PaginatedQueryBase<DiscussionEntityProps> {
   userId: string;
   constructor(
-    props: PaginatedParams<FindUserDiscussionsQuery, DiscussionEntityProps>,
+    props: PaginatedParams<FindUserDiscussionsQuery, DiscussionEntityProps>
   ) {
     super(props);
     this.userId = props.userId;
@@ -68,27 +69,27 @@ export class QuestionAnsweringHandler {
     private readonly sourceRepository: SourceRepositoryPort,
     @Inject(EVALUATION_REPOSITORY)
     private readonly evaluationRepository: EvaluationRepositoryPort,
-    private readonly s3Service: S3Service,
+    private readonly fileStorage: GCSService
   ) {}
 
   async findDiscussionChats(
-    query: FindDiscussionChatsQuery,
+    query: FindDiscussionChatsQuery
   ): Promise<Result<Paginated<ChatEntity>, Error>> {
     const records = await this.chatRepository.findAllPaginated<ChatEntityProps>(
       {
         page: query.page,
         limit: query.limit,
         orderBy: {
-          field: 'createdAt',
-          param: 'ASC',
+          field: "createdAt",
+          param: "ASC",
         },
         filterBy: [
           {
-            field: 'discussionId',
+            field: "discussionId",
             value: query.discussionId,
           },
         ],
-      },
+      }
     );
 
     return Ok(
@@ -97,12 +98,12 @@ export class QuestionAnsweringHandler {
         count: records.count,
         limit: query.limit,
         page: query.page,
-      }),
+      })
     );
   }
 
   async findChatSources(
-    query: FindChatSourcesQuery,
+    query: FindChatSourcesQuery
   ): Promise<Result<Paginated<SourceEntity>, Error>> {
     const records =
       await this.sourceRepository.findAllPaginated<SourceEntityProps>({
@@ -111,7 +112,7 @@ export class QuestionAnsweringHandler {
         orderBy: query.orderBy,
         filterBy: [
           {
-            field: 'chatId',
+            field: "chatId",
             value: query.chatId,
           },
         ],
@@ -126,7 +127,9 @@ export class QuestionAnsweringHandler {
           status: source.getProps().status,
           chapterNumber: source.getProps().chapterNumber,
           articleNumber: source.getProps().articleNumber,
-          pathDoc: await this.s3Service.getSignedUrl(source.getProps().pathDoc),
+          pathDoc: await this.fileStorage.getSignedUrl(
+            source.getProps().pathDoc
+          ),
           action: source.getProps().action,
           book: source.getProps().book,
           title: source.getProps().title,
@@ -136,8 +139,10 @@ export class QuestionAnsweringHandler {
           chapter: source.getProps().chapter,
           section: source.getProps().section,
           pathMetadata: source.getProps().pathMetadata,
-        }),
-      ),
+          reference: source.getProps().reference,
+          page: source.getProps().page,
+        })
+      )
     );
     return Ok(
       new Paginated({
@@ -145,25 +150,25 @@ export class QuestionAnsweringHandler {
         count: records.count,
         limit: query.limit,
         page: query.page,
-      }),
+      })
     );
   }
 
   async findUserDiscussions(
-    query: FindUserDiscussionsQuery,
+    query: FindUserDiscussionsQuery
   ): Promise<Result<Paginated<DiscussionEntity>, Error>> {
     const records =
       await this.discussionRepository.findAllPaginated<DiscussionEntityProps>({
         page: query.page,
         limit: query.limit,
         orderBy: {
-          field: 'createdAt',
-          param: 'DESC',
+          field: "createdAt",
+          param: "DESC",
         },
 
         filterBy: [
           {
-            field: 'userId',
+            field: "userId",
             value: query.userId,
           },
         ],
@@ -175,24 +180,7 @@ export class QuestionAnsweringHandler {
         count: records.count,
         limit: query.limit,
         page: query.page,
-      }),
+      })
     );
-  }
-
-  async findChatEvaluation(
-    query: FindChatEvaluationQuery,
-  ): Promise<Result<EvaluationEntity, Error>> {
-    const chat = await this.chatRepository.findOneById(query.chatId);
-
-    if (chat.isNone()) return Err(new NotFoundException());
-
-    const evaluation = await this.evaluationRepository.findOneById(
-      chat.unwrap().getProps().evaluationId,
-    );
-
-    if (evaluation.isNone()) return Err(new NotFoundException());
-
-    console.log('data :', evaluation);
-    return Ok(evaluation.unwrap());
   }
 }

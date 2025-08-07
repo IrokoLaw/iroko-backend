@@ -1,6 +1,7 @@
-import { Guard } from '../guard';
-import { ArgumentNotProvidedException } from '../exceptions';
-import { convertPropsToObject } from '../utils/convert-props-to-object';
+import { Guard } from "../guard";
+import { ArgumentNotProvidedException } from "../exceptions";
+import { convertPropsToObject } from "../utils/convert-props-to-object";
+import { EmptyEnum } from "./empty-value-object";
 /**
  * Domain Primitive is an object that contains only a single value
  */
@@ -50,19 +51,22 @@ export abstract class ValueObject<T> {
     return Object.freeze(propsCopy);
   }
 
-  private checkIfEmpty(props: ValueObjectProps<T>): void {
+  private checkIfEmpty(props: ValueObjectProps<T>): void | EmptyEnum {
+    if (this.isDomainPrimitive(props) && props.value === "") {
+      return EmptyEnum.EMPTY;
+    }
     if (
       Guard.isEmpty(props) ||
       (this.isDomainPrimitive(props) && Guard.isEmpty(props.value))
     ) {
-      throw new ArgumentNotProvidedException('Property cannot be empty');
+      throw new ArgumentNotProvidedException("Property cannot be empty");
     }
   }
 
   private isDomainPrimitive(
-    obj: unknown,
+    obj: unknown
   ): obj is DomainPrimitive<T & (Primitives | Date)> {
-    if (Object.prototype.hasOwnProperty.call(obj, 'value')) {
+    if (Object.prototype.hasOwnProperty.call(obj, "value")) {
       return true;
     }
     return false;

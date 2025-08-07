@@ -34,6 +34,8 @@ const chat_service_1 = require("./commands/chat/chat.service");
 const discussion_service_1 = require("./commands/discussion/discussion.service");
 const evaluation_service_1 = require("./commands/evaluation/evaluation.service");
 const answer_formatting_service_1 = require("./commands/answer-formatting.service");
+const gcs_service_1 = require("../../gcs/gcs.service");
+const gcs_client_1 = require("../../gcs/gcs-client");
 const httpControllers = [
     question_answering_command_controller_1.QuestionAnsweringCommandController,
     question_answering_queries_controller_1.QuestionAnsweringQueryHttpController,
@@ -83,7 +85,9 @@ exports.QuestionAnsweringModule = QuestionAnsweringModule = __decorate([
             question_answering_service_1.QuestionAnsweringService,
             llmQuestionAnswering,
             s3_client_1.S3ClientProvider,
+            gcs_client_1.GCSClient,
             s3_service_1.S3Service,
+            gcs_service_1.GCSService,
             ...handlers,
             ...repositories,
             ...mappers,

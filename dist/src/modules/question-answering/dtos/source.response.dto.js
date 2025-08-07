@@ -35,108 +35,110 @@ class SourceResponseDto extends response_base_1.ResponseBase {
         this.pathDoc = props.pathDoc;
         this.pathMetadata = props.pathMetadata;
         this.chatId = props.chatId;
+        this.reference = props.reference;
+        this.page = props.page;
     }
 }
 exports.SourceResponseDto = SourceResponseDto;
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'Code Civil',
-        description: 'Nom du texte juridique',
+        example: "Code Civil",
+        description: "Nom du texte juridique",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "legalTextName", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'BLOC_1',
-        description: 'Bloc juridique',
+        example: "BLOC_1",
+        description: "Bloc juridique",
         required: false,
     }),
-    __metadata("design:type", String)
+    __metadata("design:type", Object)
 ], SourceResponseDto.prototype, "bloc", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'VALID',
-        description: 'Statut du texte',
+        example: "VALID",
+        description: "Statut du texte",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "status", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'Loi',
-        description: 'la nature du texte',
+        example: "Loi",
+        description: "la nature du texte",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "legalTextType", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'MODIFY',
-        description: 'Action sur le texte',
+        example: "MODIFY",
+        description: "Action sur le texte",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "action", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'Livre II',
-        description: 'Livre concerné',
+        example: "Livre II",
+        description: "Livre concerné",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "book", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'Titre I',
-        description: 'Titre du texte',
+        example: "Titre I",
+        description: "Titre du texte",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "title", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: '1',
-        description: 'Numéro du titre',
+        example: "1",
+        description: "Numéro du titre",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "titleNumber", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'Chapitre II',
-        description: 'Chapitre du texte',
+        example: "Chapitre II",
+        description: "Chapitre du texte",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "chapter", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: '2',
-        description: 'Numéro du chapitre',
+        example: "2",
+        description: "Numéro du chapitre",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "chapterNumber", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'Section A',
-        description: 'Section du texte',
+        example: "Section A",
+        description: "Section du texte",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "section", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: 'A-1',
-        description: 'Numéro de la section',
+        example: "A-1",
+        description: "Numéro de la section",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "sectionNumber", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: '1101',
+        example: "1101",
         description: "Numéro de l'article",
         required: false,
     }),
@@ -144,25 +146,41 @@ __decorate([
 ], SourceResponseDto.prototype, "articleNumber", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: '/docs/code-civil.pdf',
-        description: 'Chemin du document source',
+        example: "/docs/code-civil.pdf",
+        description: "Chemin du document source",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "pathDoc", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: '/metadata/code-civil.json',
-        description: 'Chemin des métadonnées',
+        example: "/metadata/code-civil.json",
+        description: "Chemin des métadonnées",
         required: false,
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "pathMetadata", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: '123e4567-e89b-12d3-a456-426614174000',
-        description: 'ID du chat',
+        example: "123e4567-e89b-12d3-a456-426614174000",
+        description: "ID du chat",
     }),
     __metadata("design:type", String)
 ], SourceResponseDto.prototype, "chatId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: "ref-123",
+        description: "Référence du document",
+        required: false,
+    }),
+    __metadata("design:type", String)
+], SourceResponseDto.prototype, "reference", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 1,
+        description: "Numéro de la page",
+        required: false,
+    }),
+    __metadata("design:type", Number)
+], SourceResponseDto.prototype, "page", void 0);
 //# sourceMappingURL=source.response.dto.js.map

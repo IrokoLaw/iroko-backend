@@ -20,14 +20,13 @@ exports.chatSchema = zod_1.z.object({
     updatedAt: zod_1.z.preprocess((val) => new Date(val), zod_1.z.date()),
     question: zod_1.z.string().min(1),
     answer: zod_1.z.string().min(1),
+    discussionId: zod_1.z.string().uuid(),
     documentTypes: zod_1.z.array(zod_1.z.nativeEnum(chat_document_type_value_object_1.DocumentTypeEnum)).optional(),
     legalSubjects: zod_1.z.array(zod_1.z.nativeEnum(chat_legal_subject_value_object_1.LegalSubjectEnum)).optional(),
-    discussionId: zod_1.z.string().uuid(),
-    evaluationId: zod_1.z.string().uuid().optional(),
 });
 let ChatMapper = class ChatMapper {
     toDomain(dbEntity) {
-        const { id, question, answer, documentTypes, legalSubjects, discussionId, evaluationId, createdAt, updatedAt, } = dbEntity;
+        const { id, question, answer, documentTypes, legalSubjects, createdAt, updatedAt, discussionId, } = dbEntity;
         return new chat_entity_1.ChatEntity({
             id,
             createdAt: new Date(createdAt),
@@ -38,7 +37,6 @@ let ChatMapper = class ChatMapper {
                 documentTypes,
                 legalSubjects,
                 discussionId,
-                evaluationId,
             },
         });
     }
@@ -50,10 +48,9 @@ let ChatMapper = class ChatMapper {
             answer: copy.answer,
             documentTypes: copy.documentTypes,
             legalSubjects: copy.legalSubjects,
-            discussionId: copy.discussionId,
-            evaluationId: copy.evaluationId,
             createdAt: copy.createdAt,
             updatedAt: copy.updatedAt,
+            discussionId: copy.discussionId,
         };
         exports.chatSchema.parse(record);
         const dbEntity = new chat_entity_db_1.ChatDbEntity();

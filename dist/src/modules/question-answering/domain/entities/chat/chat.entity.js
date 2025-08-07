@@ -26,9 +26,6 @@ class ChatEntity extends entity_base_1.BaseEntity {
         });
         return chat;
     }
-    associateEvaluation(evaluationId) {
-        this.props.evaluationId = evaluationId;
-    }
     validate() { }
 }
 exports.ChatEntity = ChatEntity;

@@ -1,11 +1,14 @@
-import { ValueObject } from '@/libs/domain/value-object.base';
-import { ArgumentInvalidException } from '@/libs/exceptions';
+import { ValueObject } from "@/libs/domain/value-object.base";
+import { ArgumentInvalidException } from "@/libs/exceptions";
 
 export enum BlocEnum {
-  'REGLEMENTAIRE' = 'REGLEMENTAIRE',
-  'LEGISLATIVE' = 'LEGISLATIF',
-  'COMMUNAUTAIRE' = 'COMMUNAUTAIRE',
-  'ACTES' = 'ACTES',
+  "REGLEMENTAIRE" = "REGLEMENTAIRE",
+  "LEGISLATIVE" = "LEGISLATIF",
+  "COMMUNAUTAIRE" = "COMMUNAUTAIRE",
+  "ACTES" = "ACTES",
+  "RAS" = undefined,
+  "EMPTY" = "EMPTY",
+  "VIDE" = "",
 }
 
 export class SourceBloc extends ValueObject<BlocEnum> {
@@ -16,7 +19,7 @@ export class SourceBloc extends ValueObject<BlocEnum> {
 
   protected validate(props: { value: BlocEnum }): void {
     if (!Object.values(BlocEnum).includes(props.value)) {
-      throw new ArgumentInvalidException('bloc is invalid');
+      throw new ArgumentInvalidException("bloc is invalid");
     }
   }
 }

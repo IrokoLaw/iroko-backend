@@ -1,29 +1,34 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ChatRepositoryPort } from '../../domain/ports/chat.repository.port';
-import { DiscussionRepositoryPort } from '../../domain/ports/discussion.repository.port';
-import { SourceRepositoryPort } from '../../domain/ports/source.repository.port';
-import { Transactional } from 'typeorm-transactional';
-import { ChatEntity } from '../../domain/entities/chat/chat.entity';
-import { SourceEntity } from '../../domain/entities/source/source.entity';
-import { Err, Ok, Result } from 'oxide.ts';
-import {
-  CreateNewChatRequestDto,
-  UpdateChatRequestDto,
-} from './create-new-chat.request.dto';
+import { Inject, Injectable } from "@nestjs/common";
+import { ChatRepositoryPort } from "../../domain/ports/chat.repository.port";
+import { DiscussionRepositoryPort } from "../../domain/ports/discussion.repository.port";
+import { SourceRepositoryPort } from "../../domain/ports/source.repository.port";
+import { Transactional } from "typeorm-transactional";
+import { ChatEntity } from "../../domain/entities/chat/chat.entity";
+import { SourceEntity } from "../../domain/entities/source/source.entity";
+import { Storage } from "@google-cloud/storage";
+import { Err, Ok, Result } from "oxide.ts";
+import { CreateNewChatRequestDto } from "./create-new-chat.request.dto";
 import {
   CHAT_REPOSITORY,
   DISCUSSION_REPOSITORY,
   LLM_QUESTION_ANSWERING,
   SOURCE_REPOSITORY,
-} from '../../question-answering.di-token';
-import { LLMQuestionAnsweringPort } from '../../domain/ports/llm-question-answering.port';
-import { NotFoundException } from '@/libs/exceptions';
-import { LegalSubjectEnum } from '../../domain/values-objects/chat-legal-subject-value-object';
-import { S3Service } from '@/file-storage/s3.service';
-import { AnswerFormattingService } from '../answer-formatting.service';
+} from "../../question-answering.di-token";
+import { LLMQuestionAnsweringPort } from "../../domain/ports/llm-question-answering.port";
+import { NotFoundException } from "@/libs/exceptions";
+import { S3Service } from "@/file-storage/s3.service";
+import { AnswerFormattingService, Doc } from "../answer-formatting.service";
+import { LLMQuestionAnsweringSourceToDomainSourceMapper } from "../../infrastructure/llm-question-answering/mapper";
+import {
+  ActionEnum,
+  SourceAction,
+} from "../../domain/values-objects/text-action-object-value";
+import { BlocEnum } from "../../domain/values-objects/source-bloc-value-object";
 
 @Injectable()
 export class ChatService {
+  private storage: Storage;
+  private bucketName: string;
   constructor(
     @Inject(CHAT_REPOSITORY)
     protected readonly chatRepo: ChatRepositoryPort,
@@ -34,13 +39,16 @@ export class ChatService {
     @Inject(LLM_QUESTION_ANSWERING)
     protected readonly llmQuestionAnswering: LLMQuestionAnsweringPort,
     protected readonly s3Service: S3Service,
-    private readonly answerFormattingService: AnswerFormattingService,
-  ) {}
+    private readonly answerFormattingService: AnswerFormattingService
+  ) {
+    this.storage = new Storage();
+    this.bucketName = process.env.GCS_BUCKET_NAME;
+  }
 
   @Transactional()
   async addChatToDiscussion(
     data: CreateNewChatRequestDto,
-    discussionId: string,
+    discussionId: string
   ): Promise<Result<string, Error>> {
     try {
       const discussion = await this.discussionRepo.findOneById(discussionId);
@@ -55,47 +63,46 @@ export class ChatService {
 
   private async createNewChatAndAddToDiscussion(
     data: CreateNewChatRequestDto,
-    discussionId: string,
+    discussionId: string
   ): Promise<Result<string, Error>> {
     try {
-      const llmResponse = await this.llmQuestionAnswering.getAnswerWithSources({
-        question: data.question,
-        legalSubjects: data.legalSubjects ?? [LegalSubjectEnum.DEFAULT_LAW],
-        documentTypes: data.documentTypes ?? [],
-      });
-
-      const pathDocs = await Promise.all(
-        llmResponse.documents.map(async (source) => {
-          const signedUrl = await this.s3Service.getSignedUrl(source.pathDoc);
-          return signedUrl;
-        }),
+      const responseDocument = data.documents.map(
+        LLMQuestionAnsweringSourceToDomainSourceMapper
       );
+      const pathDocs: Doc[] = await Promise.all(
+        responseDocument.map(async (source) => {
+          const id = source.reference;
+          return { path_doc: id };
+        })
+      );
+      const answer = typeof data.answer === "string" ? data.answer : "";
 
       const chat = ChatEntity.create({
-        discussionId: discussionId,
         question: data.question,
         answer: this.answerFormattingService.parseAnswerCitation(
-          llmResponse.answer,
-          pathDocs,
+          answer,
+          pathDocs
         ),
         legalSubjects: data.legalSubjects,
         documentTypes: data.documentTypes,
+        discussionId: discussionId,
       });
 
       await this.discussionRepo.transaction(async () => {
         await this.chatRepo.insert(chat);
 
         const sources = await Promise.all(
-          llmResponse.documents.map(async (source) =>
+          responseDocument.map(async (source) =>
             SourceEntity.create({
               chatId: chat.id,
               legalTextName: source.legalTextName,
-              bloc: source.bloc,
+              bloc: source.bloc === "" ? BlocEnum.LEGISLATIVE : source.bloc,
               status: source.status,
               chapterNumber: source.chapterNumber,
               articleNumber: source.articleNumber,
               pathDoc: source.pathDoc,
-              action: source.action,
+              action:
+                source.action === "" ? ActionEnum.MODIFICATION : source.action,
               book: source.book,
               title: source.title,
               sectionNumber: source.sectionNumber,
@@ -104,8 +111,10 @@ export class ChatService {
               chapter: source.chapter,
               section: source.section,
               pathMetadata: source.pathMetadata,
-            }),
-          ),
+              reference: source.reference,
+              page: source.page,
+            })
+          )
         );
 
         await this.sourceRepo.insert(sources);
@@ -117,77 +126,28 @@ export class ChatService {
     }
   }
 
-  @Transactional()
-  async updateChat(
-    data: UpdateChatRequestDto,
-    chatId: string,
-  ): Promise<Result<string, Error>> {
-    const chat = await this.chatRepo.findOneById(chatId);
-    if (chat.isNone()) return Err(new NotFoundException());
+  async uploadAudio(file: Express.Multer.File): Promise<string> {
+    console.log("Uploading file to GCS:");
+    const bucket = this.storage.bucket(this.bucketName);
+    const fileName = `audio_${Date.now()}.webm`;
+    const gcsFile = bucket.file(fileName);
+    console.log("Uploading file to GCS:", fileName);
+    console.log("File size:", file.buffer, "bytes");
 
-    await this.chatRepo.transaction(async () => {
-      // update question, legalSubjects, documentTypes
-      await this.chatRepo.updateQuestionFields(chatId, {
-        question: data.question,
-        legalSubjects: data.legalSubjects,
-        documentTypes: data.documentTypes,
+    try {
+      await gcsFile.save(file.buffer, {
+        metadata: {
+          contentType: "audio/webm",
+        },
       });
 
-      // request to llm to update answer
-      const llmResponse = await this.llmQuestionAnswering.getAnswerWithSources({
-        question: data.question,
-        legalSubjects: data.legalSubjects ?? [LegalSubjectEnum.DEFAULT_LAW],
-        documentTypes: data.documentTypes ?? [],
+      const [signedUrl] = await gcsFile.getSignedUrl({
+        action: "read",
+        expires: Date.now() + 24 * 60 * 60 * 1000,
       });
-
-      // delete all sources
-      await this.sourceRepo.deleteByChatId(chatId);
-
-      if (llmResponse.documents.length > 0) {
-        const pathDocs = await Promise.all(
-          llmResponse.documents.map(async (source) => {
-            const signedUrl = await this.s3Service.getSignedUrl(source.pathDoc);
-            return signedUrl;
-          }),
-        );
-
-        // update answer
-        await this.chatRepo.updateAnswer(
-          chatId,
-          this.answerFormattingService.parseAnswerCitation(
-            llmResponse.answer,
-            pathDocs,
-          ),
-        );
-
-        const sources = await Promise.all(
-          llmResponse.documents.map(async (source) =>
-            SourceEntity.create({
-              chatId: chatId,
-              legalTextName: source.legalTextName,
-              bloc: source.bloc,
-              status: source.status,
-              chapterNumber: source.chapterNumber,
-              articleNumber: source.articleNumber,
-              pathDoc: source.pathDoc,
-              action: source.action,
-              book: source.book,
-              title: source.title,
-              sectionNumber: source.sectionNumber,
-              legalTextType: source.legalTextType,
-              titleNumber: source.titleNumber,
-              chapter: source.chapter,
-              section: source.section,
-              pathMetadata: source.pathMetadata,
-            }),
-          ),
-        );
-
-        // create new sources
-        await this.sourceRepo.insert(sources);
-      }
-    });
-
-    return Ok(chatId);
+      return signedUrl;
+    } catch (error) {
+      throw new Error(`Erreur lors du téléversement: ${error.message}`);
+    }
   }
 }

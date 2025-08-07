@@ -1,9 +1,9 @@
-import { BaseEntityProps } from '@/libs/domain/entity.base';
+import { BaseEntityProps } from "@/libs/domain/entity.base";
 
-import { BlocEnum } from '../../values-objects/source-bloc-value-object';
-import { ActionEnum } from '../../values-objects/text-action-object-value';
-import { StatusEnum } from '../../values-objects/text-status-value-object';
-import { LegalTextTypeEnum } from '../../values-objects/legal-text-type-value-object';
+import { BlocEnum } from "../../values-objects/source-bloc-value-object";
+import { ActionEnum } from "../../values-objects/text-action-object-value";
+import { StatusEnum } from "../../values-objects/text-status-value-object";
+import { LegalTextTypeEnum } from "../../values-objects/legal-text-type-value-object";
 export interface SourceProps {
   title: string;
   titleNumber?: string;
@@ -21,6 +21,8 @@ export interface SourceProps {
   book?: string;
   pathMetadata: string;
   chatId: string;
+  reference?: string;
+  page: number;
 }
 
 export interface CreateSourceProps {
@@ -40,6 +42,8 @@ export interface CreateSourceProps {
   book?: string;
   pathMetadata: string;
   chatId: string;
+  reference?: string;
+  page: number;
 }
 
 export interface SourceEntityProps extends SourceProps, BaseEntityProps {}

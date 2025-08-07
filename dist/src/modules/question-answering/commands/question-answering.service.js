@@ -29,14 +29,14 @@ let QuestionAnsweringService = class QuestionAnsweringService {
     async createEvaluation(data, chatId) {
         return this.evaluationService.createEvaluation(data, chatId);
     }
-    async updateChat(data, chatId) {
-        return this.chatService.updateChat(data, chatId);
-    }
     async updateEvaluation(data, evaluationId) {
         return this.evaluationService.updateEvaluation(data, evaluationId);
     }
     async createDiscussion(data) {
         return this.discussionService.createDiscussion(data);
+    }
+    async uploadAudioFile(file) {
+        return this.chatService.uploadAudio(file);
     }
 };
 exports.QuestionAnsweringService = QuestionAnsweringService;

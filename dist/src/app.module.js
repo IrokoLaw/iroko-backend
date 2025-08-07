@@ -26,6 +26,7 @@ const user_module_1 = require("./modules/account/user.module");
 const nestjs_request_context_1 = require("nestjs-request-context");
 const auth_config_1 = require("./modules/auth/config/auth.config");
 const question_answering_module_1 = require("./modules/question-answering/question-answering.module");
+const gcs_config_1 = require("./gcs/config/gcs-config");
 const interceptors = [
     {
         provide: core_1.APP_INTERCEPTOR,
@@ -39,7 +40,7 @@ const interceptors = [
 const infrastructureDatabaseModule = typeorm_1.TypeOrmModule.forRootAsync({
     useClass: typeorm_config_service_1.TypeOrmConfigService,
     dataSourceFactory: async (options) => {
-        return ((0, typeorm_transactional_1.getDataSourceByName)('default') ||
+        return ((0, typeorm_transactional_1.getDataSourceByName)("default") ||
             (0, typeorm_transactional_1.addTransactionalDataSource)(new typeorm_2.DataSource(options)).initialize());
     },
 });
@@ -51,9 +52,16 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                load: [database_config_1.default, app_config_1.default, auth_config_1.default, s3_config_1.default, llm_config_1.default],
+                load: [
+                    database_config_1.default,
+                    app_config_1.default,
+                    auth_config_1.default,
+                    s3_config_1.default,
+                    llm_config_1.default,
+                    gcs_config_1.default,
+                ],
                 envFilePath: [
-                    process.env.NODE_ENV == 'test' ? '../.env.test' : '../.env',
+                    process.env.NODE_ENV == "test" ? "../.env.test" : "../.env",
                 ],
             }),
             infrastructureDatabaseModule,

@@ -21,75 +21,83 @@ let SourceDbEntity = class SourceDbEntity extends base_entity_db_1.BaseEntityDb 
 };
 exports.SourceDbEntity = SourceDbEntity;
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "legalTextName", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'enum', enum: source_bloc_value_object_1.BlocEnum, nullable: true }),
-    __metadata("design:type", String)
+    (0, typeorm_1.Column)({ type: "enum", enum: source_bloc_value_object_1.BlocEnum, nullable: true }),
+    __metadata("design:type", Object)
 ], SourceDbEntity.prototype, "bloc", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'enum', enum: text_status_value_object_1.StatusEnum, nullable: true }),
+    (0, typeorm_1.Column)({ type: "enum", enum: text_status_value_object_1.StatusEnum, nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'enum', enum: legal_text_type_value_object_1.LegalTextTypeEnum, nullable: true }),
+    (0, typeorm_1.Column)({ type: "enum", enum: legal_text_type_value_object_1.LegalTextTypeEnum, nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "legalTextType", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'enum', enum: text_action_object_value_1.ActionEnum, nullable: true }),
+    (0, typeorm_1.Column)({ type: "enum", enum: text_action_object_value_1.ActionEnum, nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "action", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "book", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "title", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "titleNumber", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "chapter", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "chapterNumber", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "section", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "sectionNumber", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "articleNumber", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "pathDoc", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "pathMetadata", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => chat_entity_db_1.ChatDbEntity, (chat) => chat.sources),
-    (0, typeorm_1.JoinColumn)({ name: 'chatId' }),
+    (0, typeorm_1.JoinColumn)({ name: "chatId" }),
     __metadata("design:type", chat_entity_db_1.ChatDbEntity)
 ], SourceDbEntity.prototype, "chat", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], SourceDbEntity.prototype, "chatId", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "varchar", nullable: true, default: "" }),
+    __metadata("design:type", String)
+], SourceDbEntity.prototype, "reference", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "int", nullable: false, default: 1 }),
+    __metadata("design:type", Number)
+], SourceDbEntity.prototype, "page", void 0);
 exports.SourceDbEntity = SourceDbEntity = __decorate([
-    (0, typeorm_1.Entity)('source')
+    (0, typeorm_1.Entity)("source")
 ], SourceDbEntity);
 //# sourceMappingURL=source.entity.db.js.map

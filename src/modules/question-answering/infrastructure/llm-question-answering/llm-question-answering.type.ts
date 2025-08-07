@@ -1,7 +1,7 @@
-import { LegalTextTypeEnum } from '../../domain/values-objects/legal-text-type-value-object';
-import { BlocEnum } from '../../domain/values-objects/source-bloc-value-object';
-import { ActionEnum } from '../../domain/values-objects/text-action-object-value';
-import { StatusEnum } from '../../domain/values-objects/text-status-value-object';
+import { LegalTextTypeEnum } from "../../domain/values-objects/legal-text-type-value-object";
+import { BlocEnum } from "../../domain/values-objects/source-bloc-value-object";
+import { ActionEnum } from "../../domain/values-objects/text-action-object-value";
+import { StatusEnum } from "../../domain/values-objects/text-status-value-object";
 
 export interface LLMQuestionAnsweringSource {
   id: string;
@@ -22,6 +22,7 @@ export interface LLMQuestionAnsweringSource {
   title: string;
   section: string;
   article_num: string;
+  page?: string;
 }
 
 export interface LLMQuestionAnsweringResponse {

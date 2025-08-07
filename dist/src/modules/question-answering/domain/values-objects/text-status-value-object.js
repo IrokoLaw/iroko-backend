@@ -7,7 +7,10 @@ var StatusEnum;
 (function (StatusEnum) {
     StatusEnum["ROVOKED"] = "ABROGE";
     StatusEnum["APPLICABLE"] = "EN VIGUEUR";
-    StatusEnum["UPDATED"] = "MODIFIE(EN VIGUEUR)";
+    StatusEnum["UPDATED"] = "MODIFIE";
+    StatusEnum["RAS"] = "RAS";
+    StatusEnum["NAN"] = "";
+    StatusEnum["EMPTY"] = "EMPTY";
 })(StatusEnum || (exports.StatusEnum = StatusEnum = {}));
 class SourceStatus extends value_object_base_1.ValueObject {
     constructor(props) {
@@ -16,7 +19,7 @@ class SourceStatus extends value_object_base_1.ValueObject {
     }
     validate(props) {
         if (!Object.values(StatusEnum).includes(props.value)) {
-            throw new exceptions_1.ArgumentInvalidException(' the status  is invalid');
+            throw new exceptions_1.ArgumentInvalidException(" the status  is invalid");
         }
     }
 }
